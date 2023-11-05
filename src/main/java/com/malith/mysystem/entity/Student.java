@@ -11,7 +11,15 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name = "student")
+@Table(
+        name = "student",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UK_customer_email",
+                        columnNames = "email"
+                )
+        }
+)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,5 +29,7 @@ public class Student {
     private String name;
     @Column(name = "address")
     private String address;
+    @Column(name = "email")
+    private String email;
     private int age;
 }
