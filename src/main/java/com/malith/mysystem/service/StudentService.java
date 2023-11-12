@@ -2,17 +2,19 @@ package com.malith.mysystem.service;
 
 import com.malith.mysystem.dto.request.StudentRequestDto;
 import com.malith.mysystem.dto.response.StudentResponseDto;
+import com.malith.mysystem.entity.Student;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StudentService {
     public StudentResponseDto getStudentById(Long id);
 
-    StudentResponseDto saveStudent(StudentRequestDto studentRequestDto);
+    void saveStudent(StudentRequestDto studentRequestDto);
 
     List<StudentResponseDto> getAllStudents();
 
-    boolean existStudentByName(String name);
+    boolean existStudentByEmail(String name);
 
     String deleteStudentById(Long id);
 

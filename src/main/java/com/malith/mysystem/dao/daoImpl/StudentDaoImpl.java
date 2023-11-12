@@ -4,6 +4,7 @@ import com.malith.mysystem.dao.StudentDao;
 import com.malith.mysystem.dto.response.StudentResponseDto;
 import com.malith.mysystem.entity.Student;
 import com.malith.mysystem.repo.StudentRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.Optional;
 @Repository
 public class StudentDaoImpl implements StudentDao {
     private final StudentRepository studentRepository;
+    private final ModelMapper modelMapper;
 
-    public StudentDaoImpl(StudentRepository studentRepository) {
+    public StudentDaoImpl(StudentRepository studentRepository, ModelMapper modelMapper) {
         this.studentRepository = studentRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -23,13 +26,13 @@ public class StudentDaoImpl implements StudentDao {
     }
 
     @Override
-    public boolean existsStudentByName(String name) {
-        return studentRepository.existsStudentByName(name);
+    public boolean existsStudentByEmail(String email) {
+        return studentRepository.existsStudentByEmail(email);
     }
 
     @Override
-    public Student save(Student student) {
-        return studentRepository.save(student);
+    public void save(Student student) {
+        studentRepository.save(student);
     }
 
     @Override
@@ -40,5 +43,10 @@ public class StudentDaoImpl implements StudentDao {
     @Override
     public void studentDeleteById(Long id) {
         studentRepository.deleteById(id);
+    }
+
+    @Override
+    public void updateStudent(StudentResponseDto student) {
+        studentRepository.save(modelMapper.map(student, Student.class));
     }
 }

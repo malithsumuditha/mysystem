@@ -1,12 +1,10 @@
 package com.malith.mysystem.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,14 +20,14 @@ import lombok.Setter;
 )
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id",nullable = false)
     private long studentId;
     @Column(name = "name",nullable = false)
     private String name;
     @Column(name = "address")
     private String address;
+    private int age;
     @Column(name = "email")
     private String email;
-    private int age;
 }

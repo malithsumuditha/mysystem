@@ -23,8 +23,8 @@ public class StudentController {
     }
 
     @PostMapping(path = "save-student")
-    public StudentResponseDto saveStudent(@RequestBody StudentRequestDto studentRequestDto){
-        return studentService.saveStudent(studentRequestDto);
+    public void saveStudent(@RequestBody StudentRequestDto studentRequestDto){
+        studentService.saveStudent(studentRequestDto);
 
     }
 
@@ -42,4 +42,5 @@ public class StudentController {
     public StudentResponseDto updateStudent(@PathVariable("id") Long id, @RequestBody StudentRequestDto studentRequestDto){
         return studentService.updateStudent(id,studentRequestDto);
     }
+
 }

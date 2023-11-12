@@ -1,13 +1,16 @@
 package com.malith.mysystem;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-@SpringBootTest
-class MysystemApplicationTests {
+@Testcontainers
+class MysystemApplicationTests extends AbstractTestContainerUnitTest{
 
-	@Test
-	void contextLoads() {
-	}
-
+    @Test
+    void canStartMysqlDb(){
+        Assertions.assertThat(mySQLContainer.isRunning()).isTrue();
+        Assertions.assertThat(mySQLContainer.isCreated()).isTrue();
+        System.out.println();
+    }
 }

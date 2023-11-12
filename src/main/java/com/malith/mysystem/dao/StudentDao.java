@@ -9,11 +9,13 @@ import java.util.Optional;
 public interface StudentDao {
     Optional<Student> findStudentByID(Long id);
 
-    boolean existsStudentByName(String name);
+    boolean existsStudentByEmail(String email);
 
-    Student save(Student student);
+    void save(Student student);
 
     List<Student> findAllStudents();
 
     void studentDeleteById(Long id);
+
+    void updateStudent(StudentResponseDto student);
 }

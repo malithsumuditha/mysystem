@@ -7,11 +7,11 @@ import com.malith.mysystem.entity.Student;
 import com.malith.mysystem.exception.DuplicateResourceException;
 import com.malith.mysystem.exception.RequestValidationException;
 import com.malith.mysystem.exception.ResourceNotFoundException;
-import com.malith.mysystem.repo.StudentRepository;
 import com.malith.mysystem.service.StudentService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +24,8 @@ public class StudentServiceImpl implements StudentService {
     private final StudentDao studentDao;
 
     @Autowired
-    public StudentServiceImpl(ModelMapper modelMapper, StudentDao studentDao) {
+    public StudentServiceImpl(ModelMapper modelMapper,
+                              @Qualifier("jdbc") StudentDao studentDao) {
         this.modelMapper = modelMapper;
         this.studentDao = studentDao;
     }
@@ -40,14 +41,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public StudentResponseDto saveStudent(StudentRequestDto studentRequestDto) {
+    public void saveStudent(StudentRequestDto studentRequestDto) {
 
-        if (studentDao.existsStudentByName(studentRequestDto.getName())){
-            throw new DuplicateResourceException("Student Name %s Already Exist".formatted(studentRequestDto.getName()));
+        if (studentDao.existsStudentByEmail(studentRequestDto.getEmail())){
+            throw new DuplicateResourceException("Student email %s Already Exist".formatted(studentRequestDto.getEmail()));
         }else {
             Student student = modelMapper.map(studentRequestDto, Student.class);
-            Student savedStudent = studentDao.save(student);
-            return modelMapper.map(savedStudent,StudentResponseDto.class);
+            studentDao.save(student);
+            //return modelMapper.map(savedStudent,StudentResponseDto.class);
         }
     }
 
@@ -58,8 +59,8 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public boolean existStudentByName(String name) {
-        return studentDao.existsStudentByName(name);
+    public boolean existStudentByEmail(String email) {
+        return studentDao.existsStudentByEmail(email);
     }
 
     @Override
@@ -80,11 +81,6 @@ public class StudentServiceImpl implements StudentService {
         boolean changes = false;
 
         if (studentRequestDto.getName()!=null && !student.getName().equals(studentRequestDto.getName())){
-            if (existStudentByName(studentRequestDto.getName())){
-                throw new DuplicateResourceException(
-                        "Student Name %s Already Exist".formatted(studentRequestDto.getName())
-                );
-            }
             student.setName(studentRequestDto.getName());
             changes = true;
         }
@@ -98,12 +94,21 @@ public class StudentServiceImpl implements StudentService {
             student.setAge(studentRequestDto.getAge());
             changes = true;
         }
+        if (studentRequestDto.getEmail()!=null && !studentRequestDto.getEmail().isEmpty() && !studentRequestDto.getEmail().equals(student.getEmail())){
+            if (existStudentByEmail(studentRequestDto.getEmail())){
+                throw new DuplicateResourceException(
+                        "Student email %s Already Exist".formatted(studentRequestDto.getEmail())
+                );
+            }
+            student.setEmail(studentRequestDto.getEmail());
+            changes = true;
+        }
 
         if (!changes){
             throw new RequestValidationException("No data change found");
         }
-        Student updatedStudent = studentDao.save(modelMapper.map(student, Student.class));
-        return modelMapper.map(updatedStudent, StudentResponseDto.class);
+        studentDao.updateStudent(student);
+        return student;
 
     }
 }
